@@ -150,6 +150,89 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-java8" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>java8已经出来很久了，以前看过，但平时用的还是很少，现在重新学习下，以后工作中也尽量去用新的功能，边学习边写文章记录下来加深理解</p>
+<p>###lambda表达式<br>还是看对列表进行排序<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">List&lt;String&gt; list = Arrays.asList(&quot;apple&quot;, &quot;banana&quot;, &quot;orange&quot;);</div><div class="line">        Collections.sort(list, new Comparator&lt;String&gt;() &#123;</div><div class="line">            @Override</div><div class="line">            public int compare(String a, String b) &#123;</div><div class="line">                return b.compareTo(a);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        System.out.println(list);</div></pre></td></tr></table></figure></p>
+<p>上面的代码在Java8里可以改写为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Collections.sort(list, (String a, String b) -&gt; &#123;</div><div class="line">    return b.compareTo(a);</div><div class="line">&#125;);</div><div class="line">System.out.println(list);</div></pre></td></tr></table></figure></p>
+<p>使用()-&gt;{}代替匿名函数部分，还可以更简短一些<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Collections.sort(list, (String a, String b) -&gt; b.compareTo(a));</div></pre></td></tr></table></figure></p>
+<p>还可以省略参数类型<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Collections.sort(list, (a, b) -&gt; b.compareTo(a));</div></pre></td></tr></table></figure></p>
+<p>###函数式接口<br>Lambda表达式如何匹配Java的类型系统？每一个lambda表达式都能够通过一个特定的接口与一个给定的类型进行匹配。一个所谓的函数式接口必须要有且仅有一个抽象方法声明。每个与之对应的lambda表达式必须要与抽象的方法声明相匹配。由于默认方法不是抽象的，因此你可以在你的函数式接口里添加任意的默认方法。任意一个包含抽象方法的接口我们都可以用来做lambda表达式，为了让你的接口满足需求，你应该在接口上加上@FunctionalInterface注解。编译器会注意这个注解，如果你的接口中有第二个抽象方法，编译器会抛出异常。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">@FunctionalInterface</div><div class="line">public interface Convert&lt;F,T&gt;&#123;</div><div class="line">    T convert(F from);</div><div class="line">&#125;</div><div class="line"></div><div class="line">Convert&lt;String,Integer&gt; convert = from -&gt; Integer.valueOf(from);</div><div class="line">Integer integer = convert.convert(&quot;123&quot;);</div><div class="line">System.out.println(integer);</div></pre></td></tr></table></figure></p>
+<p>###方法和构造函数引用<br>上面的方法还可以使用静态方法引用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Convert&lt;String,Integer&gt; convert = Integer::valueOf;</div><div class="line">Integer integer = convert.convert(&quot;123&quot;);</div><div class="line">System.out.println(integer);</div></pre></td></tr></table></figure></p>
+<p>Java 8 允许你通过::关键字获取方法或者构造函数的的引用<br>方法引用的标准形式是  类名::方法名(只需要写方法名，不需要括号)<br>引用静态方法                                            ContainingClass::staticMethodName<br>引用某个对象的实例方法                    containingObject::instanceMethodName<br>引用某个类型的任意对象的实例方法    ContainingType::methodName<br>引用构造方法                                            ClassName::new</p>
+<p>###数据流<br>Stream是java8引入的一个重度使用lambda表达式的API。Stream使用一种类似用SQL语句从数据库查询数据的直观方式来提供一种对Java集合运算和表达的高阶抽象。直观意味着开发者在写代码时只需关注他们想要的结果是什么而无需关注实现结果的具体方式<br>数据过滤<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">List&lt;String&gt; list = Arrays.asList(&quot;a1&quot;,&quot;a2&quot;,&quot;b1&quot;,&quot;c2&quot;,&quot;c1&quot;);</div><div class="line"></div><div class="line">   Stream&lt;String&gt; stream = list.stream();</div><div class="line"></div><div class="line">   stream = stream.filter(new Predicate&lt;String&gt;() &#123;</div><div class="line">       @Override</div><div class="line">       public boolean test(String s) &#123;</div><div class="line">           return s.startsWith(&quot;c&quot;);</div><div class="line">       &#125;</div><div class="line">   &#125;);</div><div class="line"></div><div class="line">   stream.forEach(new Consumer&lt;String&gt;() &#123;</div><div class="line">       @Override</div><div class="line">       public void accept(String s) &#123;</div><div class="line">           System.out.println(s);</div><div class="line">       &#125;</div><div class="line">   &#125;);</div></pre></td></tr></table></figure></p>
+<p>引入lambda表达式改写如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">List&lt;String&gt; list = Arrays.asList(&quot;a1&quot;,&quot;a2&quot;,&quot;b1&quot;,&quot;c2&quot;,&quot;c1&quot;);</div><div class="line"></div><div class="line">Stream&lt;String&gt; stream = list.stream();</div><div class="line"></div><div class="line">stream = stream.filter(s -&gt; s.startsWith(&quot;c&quot;));</div><div class="line"></div><div class="line">stream.forEach(System.out::println);</div></pre></td></tr></table></figure></p>
+<p>衔接操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">stream</div><div class="line">        .filter(s -&gt; s.startsWith(&quot;c&quot;))</div><div class="line">        .map(String::toUpperCase)</div><div class="line">        .sorted()</div><div class="line">        .forEach(System.out::println);//输出C2 C1</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">  //mapToInt</div><div class="line">  IntStream intStream = Stream.of(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;).mapToInt(Integer::valueOf);</div><div class="line">  intStream.forEach(value -&gt; System.out.println(value + 1));</div><div class="line">  //mapToLong</div><div class="line">  LongStream longStream = Stream.of(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;).mapToLong(Long::valueOf);</div><div class="line">  longStream.forEach(value -&gt; System.out.println(value + 1));</div><div class="line">  //mapToDouble</div><div class="line">  DoubleStream doubleStream = Stream.of(&quot;1.1&quot;, &quot;2.2&quot;, &quot;3.3&quot;).mapToDouble(Double::parseDouble);</div><div class="line">  doubleStream.forEach(value -&gt; System.out.println(value + 1));</div><div class="line">  //flatMap</div><div class="line">  Stream&lt;List&lt;Integer&gt;&gt; inputStream = Stream.of(</div><div class="line">          Arrays.asList(1),</div><div class="line">          Arrays.asList(2, 3),</div><div class="line">          Arrays.asList(4, 5, 6)</div><div class="line">  );</div><div class="line">  Stream&lt;Integer&gt; outputStream = inputStream.flatMap(Collection::stream);</div><div class="line">  outputStream.forEach(System.out::println);</div><div class="line"></div><div class="line">  //reduce 这个方法的主要作用是把 Stream 元素组合起来。它提供一个起始值（种子），然后依照运算规则（BinaryOperator），和前面 Stream 的第一个、第二个、第 n 个元素组合。从这个意义上说，字符串拼接、数值的 sum、min、max、average 都是特殊的 reduce。例如 Stream 的 sum 就相当于</div><div class="line">  String s = Stream.of(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;).reduce(&quot;A&quot;, String::concat);</div><div class="line">  System.out.println(s);//AABCD</div><div class="line">  //limit  返回 Stream 的前面 n 个元素</div><div class="line">  Stream.of(&quot;A&quot;,&quot;B&quot;,&quot;c&quot;,&quot;d&quot;).limit(2).forEach(System.out::println);</div><div class="line"> //skip 则是扔掉前 n 个元素</div><div class="line">  Stream.of(&quot;A&quot;,&quot;B&quot;,&quot;c&quot;,&quot;d&quot;).skip(2).forEach(System.out::println);</div><div class="line">//min/max/distinct</div><div class="line">  int min = Stream.of(&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;).mapToInt(Integer::valueOf).min().getAsInt();</div><div class="line">  System.out.println(min);</div><div class="line">  int max = Stream.of(&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;).mapToInt(Integer::valueOf).max().getAsInt();</div><div class="line">  System.out.println(max);</div><div class="line"></div><div class="line">  Stream.of(&quot;1&quot;,&quot;2&quot;,&quot;2&quot;,&quot;1&quot;,&quot;3&quot;).distinct().forEach(System.out::println);</div></pre></td></tr></table></figure>
+<p>Match<br>Stream 有三个 match 方法，从语义上说：</p>
+<ul>
+<li>allMatch：Stream 中全部元素符合传入的 predicate，返回 true</li>
+<li>anyMatch：Stream 中只要有一个元素符合传入的 predicate，返回 true</li>
+<li>noneMatch：Stream 中没有一个元素符合传入的 predicate，返回 true<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">boolean result = Stream.of(1,18,20,30,100).allMatch(integer -&gt; integer&gt;10);</div><div class="line">System.out.println(result);</div><div class="line">result = Stream.of(1,18,20,30,100).anyMatch(integer -&gt; integer&gt;10);</div><div class="line">System.out.println(result);</div><div class="line">result = Stream.of(1,18,20,30,100).noneMatch(integer -&gt; integer&gt;10);</div><div class="line">System.out.println(result);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>总之，Stream 的特性可以归纳为：</p>
+<ul>
+<li>不是数据结构</li>
+<li>它没有内部存储，它只是用操作管道从 source（数据结构、数组、generator function、IO channel）抓取数据。</li>
+<li>它也绝不修改自己所封装的底层数据结构的数据。例如 Stream 的 filter 操作会产生一个不包含被过滤元素的新 Stream，而不是从 source 删除那些元素。</li>
+<li>所有 Stream 的操作必须以 lambda 表达式为参数</li>
+<li>不支持索引访问</li>
+<li>你可以请求第一个元素，但无法请求第二个，第三个，或最后一个。不过请参阅下一项。</li>
+<li>很容易生成数组或者 List</li>
+<li>惰性化</li>
+<li>很多 Stream 操作是向后延迟的，一直到它弄清楚了最后需要多少数据才会开始。</li>
+<li>Intermediate 操作永远是惰性化的。</li>
+<li>并行能力</li>
+<li>当一个 Stream 是并行化的，就不需要再写多线程代码，所有对它的操作会自动并-<br>行进行的。</li>
+<li>可以是无限的</li>
+<li>集合有固定大小，Stream 则不必。limit(n) 和 findFirst() 这类的 short-circuiting 操作可以对无限的 Stream 进行运算并很快完成。</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/01/19/java8/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-python-1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -768,7 +851,7 @@ var _hmt = _hmt || [];
 
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2017 Fly
+    		&copy; 2018 Fly
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Fly
@@ -845,11 +928,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">elasticsearch</a>
+                <a href="javascript:void(0)" class="js-tag color5">bootstrap</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">bootstrap</a>
+                <a href="javascript:void(0)" class="js-tag color4">elasticsearch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -865,11 +948,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
+                <a href="javascript:void(0)" class="js-tag color2">spring</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">spring</a>
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
             
             <div class="clearfix"></div>
