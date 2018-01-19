@@ -153,9 +153,24 @@ var _hmt = _hmt || [];
     <article id="post-java8" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/19/java8/">Java8新特性</a>
+    </h1>
+  
+
+        
+        <a href="/2018/01/19/java8/" class="archive-article-date">
+  	<time datetime="2018-01-19T04:03:06.187Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-19</time>
+</a>
+        
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <p>java8已经出来很久了，以前看过，但平时用的还是很少，现在重新学习下，以后工作中也尽量去用新的功能，边学习边写文章记录下来加深理解</p>
+        <p>Java8已经出来很久了，以前看过，但平时用的还是很少，现在重新学习下，以后工作中也尽量去用新的功能，边学习边写文章记录下来加深理解</p>
 <p>###lambda表达式<br>还是看对列表进行排序<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">List&lt;String&gt; list = Arrays.asList(&quot;apple&quot;, &quot;banana&quot;, &quot;orange&quot;);</div><div class="line">        Collections.sort(list, new Comparator&lt;String&gt;() &#123;</div><div class="line">            @Override</div><div class="line">            public int compare(String a, String b) &#123;</div><div class="line">                return b.compareTo(a);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        System.out.println(list);</div></pre></td></tr></table></figure></p>
 <p>上面的代码在Java8里可以改写为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Collections.sort(list, (String a, String b) -&gt; &#123;</div><div class="line">    return b.compareTo(a);</div><div class="line">&#125;);</div><div class="line">System.out.println(list);</div></pre></td></tr></table></figure></p>
 <p>使用()-&gt;{}代替匿名函数部分，还可以更简短一些<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Collections.sort(list, (String a, String b) -&gt; b.compareTo(a));</div></pre></td></tr></table></figure></p>
@@ -199,6 +214,17 @@ var _hmt = _hmt || [];
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -928,6 +954,10 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">bootstrap</a>
               </li>
              
@@ -944,15 +974,11 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">spring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
             
             <div class="clearfix"></div>
